@@ -23,3 +23,15 @@ type Discussao struct {
 	DataHora      string
 	Participantes []Cidadao
 }
+
+type InformacoesGovernamentais struct {
+	ID        int
+	Titulo    string
+	Descricao string
+	DataHora  string
+}
+
+type Credentials struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}

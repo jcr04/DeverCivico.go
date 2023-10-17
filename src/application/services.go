@@ -9,7 +9,30 @@ type CidadaoService struct {
 	repo infrastructure.CidadaoRepository
 }
 
-// NewCidadaoService é uma função construtora para CidadaoService.
+type ProblemaService struct {
+	repo infrastructure.ProblemaRepository
+}
+
+func NewProblemaService(repo infrastructure.ProblemaRepository) *ProblemaService {
+	return &ProblemaService{repo: repo}
+}
+
+type DiscussaoService struct {
+	repo infrastructure.DiscussaoRepository
+}
+
+func NewDiscussaoService(repo infrastructure.DiscussaoRepository) *DiscussaoService {
+	return &DiscussaoService{repo: repo}
+}
+
+type InformacoesService struct {
+	repo infrastructure.InformacoesRepository
+}
+
+func NewInformacoesService(repo infrastructure.InformacoesRepository) *InformacoesService {
+	return &InformacoesService{repo: repo}
+}
+
 func NewCidadaoService(repo infrastructure.CidadaoRepository) *CidadaoService {
 	return &CidadaoService{repo: repo}
 }
@@ -21,4 +44,29 @@ func (s *CidadaoService) CadastrarCidadao(cidadao domain.Cidadao) error {
 		return err // Retornando o erro, se houver algum.
 	}
 	return nil
+}
+
+func (s *ProblemaService) ReportarProblema(problema domain.ProblemaReportado) error {
+	err := s.repo.Reportar(problema)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (s *DiscussaoService) CriarDiscussao(discussao domain.Discussao) error {
+	return s.repo.Criar(discussao)
+}
+
+func (s *DiscussaoService) ListarDiscussoes() ([]domain.Discussao, error) {
+	return s.repo.Listar()
+}
+
+func (s *InformacoesService) ObterInformacoes() (domain.InformacoesGovernamentais, error) {
+	return s.repo.Obter()
+}
+
+func (s *CidadaoService) Login(credentials domain.Credentials) (domain.Cidadao, error) {
+	var cidadao domain.Cidadao
+	return cidadao, nil
 }

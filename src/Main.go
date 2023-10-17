@@ -1,4 +1,3 @@
-// DeverCivico.go
 package main
 
 import (
@@ -15,8 +14,20 @@ func main() {
 	if err != nil {
 		log.Fatalf("Failed to connect to the database: %v", err)
 	}
+
 	cidadaoRepo := infrastructure.NewCidadaoRepository(db)
 	cidadaoService := application.NewCidadaoService(*cidadaoRepo)
-	router := presentation.NewRouter(cidadaoService)
+
+	problemaRepo := infrastructure.NewProblemaRepository(db)
+	problemaService := application.NewProblemaService(*problemaRepo)
+
+	discussaoRepo := infrastructure.NewDiscussaoRepository(db)
+	discussaoService := application.NewDiscussaoService(*discussaoRepo)
+
+	informacoesRepo := infrastructure.NewInformacoesRepository(db)
+	informacoesService := application.NewInformacoesService(*informacoesRepo)
+
+	router := presentation.NewRouter(cidadaoService, problemaService, discussaoService, informacoesService)
+
 	http.ListenAndServe(":8080", router)
 }
