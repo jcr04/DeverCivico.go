@@ -49,7 +49,7 @@ func (s *ProblemaService) ReportarProblema(problema *domain.ProblemaReportado) e
 	return nil
 }
 
-func (s *DiscussaoService) CriarDiscussao(discussao domain.Discussao) error {
+func (s *DiscussaoService) CriarDiscussao(discussao *domain.Discussao) error {
 	return s.repo.Criar(discussao)
 }
 

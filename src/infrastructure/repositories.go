@@ -2,6 +2,7 @@ package infrastructure
 
 import (
 	"database/sql"
+	"time"
 
 	"github.com/jcr04/DeverCivico.go/src/domain"
 )
@@ -91,13 +92,17 @@ func (r *DiscussaoRepository) Listar() ([]domain.Discussao, error) {
 	return discussoes, nil
 }
 
-func (r *DiscussaoRepository) Criar(discussao domain.Discussao) error {
+func (r *DiscussaoRepository) Criar(discussao *domain.Discussao) error {
 	query := `
 		INSERT INTO discussao (titulo, descricao, data_hora)
 		VALUES ($1, $2, $3)
 		RETURNING id
 	`
-	err := r.db.QueryRow(query, discussao.Titulo, discussao.Descricao, discussao.DataHora).Scan(&discussao.ID)
+	dataHora, err := time.Parse(time.RFC3339, discussao.DataHora)
+	if err != nil {
+		return err
+	}
+	err = r.db.QueryRow(query, discussao.Titulo, discussao.Descricao, dataHora).Scan(&discussao.ID)
 	if err != nil {
 		return err
 	}

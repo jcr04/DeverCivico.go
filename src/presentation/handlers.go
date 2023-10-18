@@ -126,7 +126,7 @@ func (h *DiscussaoHandler) CriarDiscussaoHandler(w http.ResponseWriter, r *http.
 		return
 	}
 
-	err = h.service.CriarDiscussao(discussao)
+	err = h.service.CriarDiscussao(&discussao)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
