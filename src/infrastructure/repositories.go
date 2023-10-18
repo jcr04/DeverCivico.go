@@ -38,19 +38,14 @@ func NewProblemaRepository(db *sql.DB) *ProblemaRepository {
 	return &ProblemaRepository{db: db}
 }
 
-func (r *CidadaoRepository) Cadastrar(cidadao domain.Cidadao) error {
+func (r *CidadaoRepository) Cadastrar(cidadao *domain.Cidadao) error {
 	query := `
-		INSERT INTO cidadao (nome, email, senha)
-		VALUES ($1, $2, $3)
-		RETURNING id
-	`
+        INSERT INTO cidadao (nome, email, senha)
+        VALUES ($1, $2, $3)
+        RETURNING id
+    `
 
-	err := r.db.QueryRow(query, cidadao.Nome, cidadao.Email, cidadao.Senha).Scan(&cidadao.ID)
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return r.db.QueryRow(query, cidadao.Nome, cidadao.Email, cidadao.Senha).Scan(&cidadao.ID)
 }
 
 func (r *ProblemaRepository) Reportar(problema domain.ProblemaReportado) error {
@@ -126,4 +121,19 @@ func (r *InformacoesRepository) Obter() (domain.InformacoesGovernamentais, error
 	}
 
 	return info, nil
+}
+
+func (r *CidadaoRepository) ObterPorCredenciais(email, senha string) (domain.Cidadao, error) {
+	query := `
+        SELECT id, nome, email, senha
+        FROM cidadao
+        WHERE email = $1 AND senha = $2
+    `
+	row := r.db.QueryRow(query, email, senha)
+	var cidadao domain.Cidadao
+	err := row.Scan(&cidadao.ID, &cidadao.Nome, &cidadao.Email, &cidadao.Senha)
+	if err != nil {
+		return domain.Cidadao{}, err
+	}
+	return cidadao, nil
 }

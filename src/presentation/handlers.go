@@ -3,8 +3,10 @@ package presentation
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/jcr04/DeverCivico.go/src/application"
 	"github.com/jcr04/DeverCivico.go/src/domain"
@@ -34,13 +36,18 @@ func (h *CidadaoHandler) CadastrarHandler(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	err = h.service.CadastrarCidadao(cidadao)
+	err = h.service.CadastrarCidadao(&cidadao)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	w.WriteHeader(http.StatusCreated)
+	response := map[string]interface{}{
+		"message": "Cidadão cadastrado com sucesso",
+		"cidadao": cidadao,
+	}
+	json.NewEncoder(w).Encode(response)
 }
 
 func (h *CidadaoHandler) LoginHandler(w http.ResponseWriter, r *http.Request) {
@@ -63,7 +70,9 @@ func (h *CidadaoHandler) LoginHandler(w http.ResponseWriter, r *http.Request) {
 		Value: strconv.Itoa(cidadao.ID), // Converta o ID do cidadão para uma string
 	})
 
+	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(cidadao) // Serializa o objeto cidadão em JSON e escreve na resposta
 }
 
 func (h *ProblemaHandler) ReportarProblemaHandler(w http.ResponseWriter, r *http.Request) {
@@ -73,6 +82,11 @@ func (h *ProblemaHandler) ReportarProblemaHandler(w http.ResponseWriter, r *http
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
+	if problema.DataHora == "" {
+		problema.DataHora = time.Now().Format(time.RFC3339) // ou outro formato que você deseja usar
+	}
+
+	log.Printf("Reportando problema: %+v\n", problema)
 
 	err = h.service.ReportarProblema(problema)
 	if err != nil {
@@ -80,7 +94,9 @@ func (h *ProblemaHandler) ReportarProblemaHandler(w http.ResponseWriter, r *http
 		return
 	}
 
+	w.Header().Set("Content-Type", "application/json") // Defina o tipo de conteúdo da resposta para JSON
 	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode(problema) // Serializa o objeto problema em JSON e escreve na resposta
 }
 
 func (h *DiscussaoHandler) DiscussoesHandler(w http.ResponseWriter, r *http.Request) {
@@ -99,6 +115,7 @@ func (h *DiscussaoHandler) DiscussoesHandler(w http.ResponseWriter, r *http.Requ
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	w.Write(responseData)
+	json.NewEncoder(w).Encode(discussoes)
 }
 
 func (h *DiscussaoHandler) CriarDiscussaoHandler(w http.ResponseWriter, r *http.Request) {
@@ -115,7 +132,9 @@ func (h *DiscussaoHandler) CriarDiscussaoHandler(w http.ResponseWriter, r *http.
 		return
 	}
 
+	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode(discussao)
 }
 
 func (h *InformacoesHandler) InformacoesGovernamentaisHandler(w http.ResponseWriter, r *http.Request) {
@@ -134,4 +153,5 @@ func (h *InformacoesHandler) InformacoesGovernamentaisHandler(w http.ResponseWri
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	w.Write(responseData)
+	json.NewEncoder(w).Encode(info)
 }

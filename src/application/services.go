@@ -37,13 +37,8 @@ func NewCidadaoService(repo infrastructure.CidadaoRepository) *CidadaoService {
 	return &CidadaoService{repo: repo}
 }
 
-func (s *CidadaoService) CadastrarCidadao(cidadao domain.Cidadao) error {
-	// Chamada ao método Cadastrar do repositório.
-	err := s.repo.Cadastrar(cidadao)
-	if err != nil {
-		return err // Retornando o erro, se houver algum.
-	}
-	return nil
+func (s *CidadaoService) CadastrarCidadao(cidadao *domain.Cidadao) error {
+	return s.repo.Cadastrar(cidadao)
 }
 
 func (s *ProblemaService) ReportarProblema(problema domain.ProblemaReportado) error {
@@ -67,6 +62,5 @@ func (s *InformacoesService) ObterInformacoes() (domain.InformacoesGovernamentai
 }
 
 func (s *CidadaoService) Login(credentials domain.Credentials) (domain.Cidadao, error) {
-	var cidadao domain.Cidadao
-	return cidadao, nil
+	return s.repo.ObterPorCredenciais(credentials.Email, credentials.Senha)
 }
