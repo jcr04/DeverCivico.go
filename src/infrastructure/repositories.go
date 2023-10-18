@@ -48,7 +48,7 @@ func (r *CidadaoRepository) Cadastrar(cidadao *domain.Cidadao) error {
 	return r.db.QueryRow(query, cidadao.Nome, cidadao.Email, cidadao.Senha).Scan(&cidadao.ID)
 }
 
-func (r *ProblemaRepository) Reportar(problema domain.ProblemaReportado) error {
+func (r *ProblemaRepository) Reportar(problema *domain.ProblemaReportado) error {
 	query := `
 		INSERT INTO problema_reportado (descricao, localizacao, data_hora, status)
 		VALUES ($1, $2, $3, $4)

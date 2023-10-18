@@ -41,7 +41,7 @@ func (s *CidadaoService) CadastrarCidadao(cidadao *domain.Cidadao) error {
 	return s.repo.Cadastrar(cidadao)
 }
 
-func (s *ProblemaService) ReportarProblema(problema domain.ProblemaReportado) error {
+func (s *ProblemaService) ReportarProblema(problema *domain.ProblemaReportado) error {
 	err := s.repo.Reportar(problema)
 	if err != nil {
 		return err

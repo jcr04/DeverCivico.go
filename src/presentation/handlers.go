@@ -88,7 +88,7 @@ func (h *ProblemaHandler) ReportarProblemaHandler(w http.ResponseWriter, r *http
 
 	log.Printf("Reportando problema: %+v\n", problema)
 
-	err = h.service.ReportarProblema(problema)
+	err = h.service.ReportarProblema(&problema)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
